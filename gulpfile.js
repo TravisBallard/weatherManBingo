@@ -17,8 +17,8 @@ var app = {
 	},
 
 	sass: {
-		src: './src/inc/compass/sass/**/*.sass',
-		dest: './dist/inc/compass/css',
+		src: './src/inc/sass/**/*.sass',
+		dest: './dist/inc/css',
 		options: {
 			outputStyle: 'compressed',
 			includePaths : './src/inc/compass/sass'
