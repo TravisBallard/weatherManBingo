@@ -44,8 +44,6 @@
 				bottom: parseInt(this.$container.css('paddingBottom').toString().replace(/px/g,''))
 			};
 
-			console.log('this', this.$container.css('paddingLeft'));
-
 			this.getPhrases();
 			this.resize(false);
 
