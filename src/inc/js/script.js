@@ -38,7 +38,7 @@
 			this.canvas = $(canvasID)[0];
 			this.context = this.canvas.getContext('2d');
 			this.$container = $(this.canvas).parent();
-			this.clicked_square_bg_color = this.getRandomColor();
+			this.clicked_square_bg_color = this.getRandomLightColor();
 
 			this.container_padding = {
 				left: parseInt(this.$container.css('paddingLeft').toString().replace(/px/g,'')),
@@ -67,7 +67,7 @@
 		},
 
 		/**
-		 * populate each bingo square for the canvas
+		 * Populate each bingo square for the canvas
 		 */
 		populateSquares: function(){
 
@@ -108,7 +108,7 @@
 		},
 
 		/**
-		 * draw the squares on the bingo card
+		 * Draw the squares on the bingo card
 		 */
 		drawSquares: function(){
 			var self = this;
@@ -150,7 +150,7 @@
 		},
 
 		/**
-		 * load phrases from json
+		 * Load phrases from json
 		 */
 		getPhrases: function(){
 			var self = this;
@@ -161,7 +161,7 @@
 		},
 
 		/**
-		 * get an unused phrase to use or use the free square if we're at that positon
+		 * Get an unused phrase to use or use the free square if we're at that positon
 		 */
 		getPhrase: function(idx){
 			if (idx !== (this.free_space_position - 1)) {
@@ -175,6 +175,7 @@
 		 * Shuffle an array
 		 *
 		 * @param array
+		 *
 		 * @returns {*}
 		 */
 		shuffleArray: function(array){
@@ -207,7 +208,7 @@
 		},
 
 		/**
-		 * clear canvas
+		 * Clear canvas
 		 */
 		clear: function(){
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -241,11 +242,52 @@
 		 * @returns {string}
 		 */
 		getRandomColor: function(){
-			return '#'+Math.floor(Math.random()*16777215).toString(16);
+			return '#'+Math.floor(Math.random()*16777215).toString(16); // full spectrum, any color
 		},
 
 		/**
-		 * get the square that was clicked
+		 * Generate a light shade color randomly
+		 *
+		 * @returns {*}
+		 */
+		getRandomLightColor: function(){
+			return this.convertRGBToHex(
+				(Math.floor((256-229)*Math.random()) + 220),
+				(Math.floor((256-229)*Math.random()) + 220),
+				(Math.floor((256-229)*Math.random()) + 220)
+			);
+		},
+
+		/**
+		 * Convert an RGB component to it's hex value
+		 *
+		 * @param c
+		 * @returns {string}
+		 */
+		convertRGBComponentToHex: function(c) {
+			var hex = c.toString(16);
+			return hex.length == 1 ? "0" + hex : hex;
+		},
+
+		/**
+		 * Concert an RGB value to hex
+		 *
+		 * @param r
+		 * 	red value
+		 * @param g
+		 * 	green value
+		 * @param b
+		 * 	blue value
+		 *
+		 * @returns {string}
+		 */
+		convertRGBToHex: function(r, g, b) {
+			return "#"+this.convertRGBComponentToHex(r)+this.convertRGBComponentToHex(g)+this.convertRGBComponentToHex(b);
+		},
+
+		/**
+		 * Get the square that was clicked
+		 *
 		 * @param e
 		 */
 		captureClickOnSquare: function(e){
