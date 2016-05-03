@@ -256,20 +256,20 @@
 				};
 
 			if (this.squares.length){
-				var idx = 0;
 				this.squares.forEach(function(square){
 					if (
 						click.x >= square.x && click.x <= (square.x + square.width) &&
 						click.y >= square.y && click.y <= (square.y + square.height)
 					){
-						square.setBackgroundColor(self.clicked_square_bg_color);
-						self.squares[idx] = square;
+						if (square.backgroundColor === square.defaultBackgroundColor) {
+							square.setBackgroundColor(self.clicked_square_bg_color);
+						} else {
+							square.setBackgroundColor(square.defaultBackgroundColor);
+						}
 						self.render(false);
 					}
-					idx++;
 				});
 			}
-
 		}
 	};
 
@@ -301,6 +301,7 @@
 		this.y = y;
 		this.is_free_space = is_free_space;
 		this.backgroundColor = 'white';
+		this.defaultBackgroundColor = 'white';
 		this.text = text;
 		this.rowPosition = pos;
 		this.row = row;
