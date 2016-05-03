@@ -17,6 +17,7 @@
 		total_squares: 25,
 		squares_per_row: 5,
 		gutter_size: 0, // todo: make this work.
+		clicked_square_bg_color: null,
 
 		// free space info
 		free_space_text: 'Moore',
@@ -37,6 +38,8 @@
 			this.canvas = $(canvasID)[0];
 			this.context = this.canvas.getContext('2d');
 			this.$container = $(this.canvas).parent();
+			this.clicked_square_bg_color = this.getRandomColor();
+
 			this.container_padding = {
 				left: parseInt(this.$container.css('paddingLeft').toString().replace(/px/g,'')),
 				right: parseInt(this.$container.css('paddingRight').toString().replace(/px/g,'')),
@@ -48,6 +51,7 @@
 			this.resize(false);
 
 			window.addEventListener('resize', function(){ self.resize(true); });
+			$(this.canvas).click(function(e){self.captureClickOnSquare(e);});
 		},
 
 		/**
@@ -118,7 +122,7 @@
 				ctx.rect(square.x, square.y, square.width, square.height);
 				ctx.closePath();
 
-				ctx.fillStyle = square.is_free_space ? 'white' : 'white';//square.backgroundColor;
+				ctx.fillStyle = square.is_free_space ? self.clicked_square_bg_color : square.backgroundColor;
 
 				ctx.stroke();
 				ctx.fill();
@@ -195,9 +199,10 @@
 		/**
 		 * Render the bingo card
 		 */
-		render: function(){
+		render: function(populate){
 			this.clear(); // clear canvas
-			this.populateSquares(); // populate each square randomly
+			if (populate === undefined) populate = true;
+			if(populate) this.populateSquares(); // populate each square randomly
 			this.drawSquares(); // draw
 		},
 
@@ -237,6 +242,34 @@
 		 */
 		getRandomColor: function(){
 			return '#'+Math.floor(Math.random()*16777215).toString(16);
+		},
+
+		/**
+		 * get the square that was clicked
+		 * @param e
+		 */
+		captureClickOnSquare: function(e){
+			var self = this,
+				click = {
+					x: e.offsetX,
+					y: e.offsetY
+				};
+
+			if (this.squares.length){
+				var idx = 0;
+				this.squares.forEach(function(square){
+					if (
+						click.x >= square.x && click.x <= (square.x + square.width) &&
+						click.y >= square.y && click.y <= (square.y + square.height)
+					){
+						square.setBackgroundColor(self.clicked_square_bg_color);
+						self.squares[idx] = square;
+						self.render(false);
+					}
+					idx++;
+				});
+			}
+
 		}
 	};
 
@@ -267,8 +300,10 @@
 		this.x = x;
 		this.y = y;
 		this.is_free_space = is_free_space;
-		this.backgroundColor = bingoCard.getRandomColor();
+		this.backgroundColor = 'white';
 		this.text = text;
+		this.rowPosition = pos;
+		this.row = row;
 		this.id = 'Square-' + id;
 	};
 
@@ -281,6 +316,14 @@
 	bingoSquare.prototype.setDimensions = function(h, w){
 		this.height = h;
 		this.width = w;
+	};
+
+	/**
+	 * set background color of the square
+	 * @param color
+	 */
+	bingoSquare.prototype.setBackgroundColor = function(color){
+		this.backgroundColor = color;
 	};
 
 	/**
