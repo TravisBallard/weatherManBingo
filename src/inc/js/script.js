@@ -141,7 +141,7 @@
 
 					var curLine = 1;
 					lines.forEach(function(line){
-						lx = square.x + square.width / 2 - self.context.measureText(line).width / 2;
+						lx = square.x + square.width / 2 - ctx.measureText(line).width / 2;
 						ctx.fillText(line, lx, (ly + (font_size_no_px * 1 ) * curLine));
 						curLine += 1;
 					});
